@@ -72,79 +72,79 @@ def update_figure(chosen_city):
     # https://plotly.com/python/scattermapbox/
     # Create figure
 
-        # Create figure
-    locations=[go.Scattermapbox(
-                    lat = distinctDf['lat'],
-                    lon = distinctDf['lng'],
-                    mode='markers',
-                    # marker={'symbol' : 'star', 'size':16, 'allowoverlap':True},
-                    unselected={'marker' : {'opacity':1}},
-                    selected={'marker' : {'opacity':0.5, 'size':25}},
-                    hoverinfo='lon+lat+text',                                   # Examples: "lon", "lat", "lon+lat", "lon+lat+text", "all", 'none', 'skip'
-                    hovertext=distinctDf['Hotel_Name'],
-                    # customdata=df_sub['website']
-    )]
+    #     # Create figure
+    # locations=[go.Scattermapbox(
+    #                 lat = distinctDf['lat'],
+    #                 lon = distinctDf['lng'],
+    #                 mode='markers',
+    #                 # marker={'symbol' : 'star', 'size':16, 'allowoverlap':True},
+    #                 unselected={'marker' : {'opacity':1}},
+    #                 selected={'marker' : {'opacity':0.5, 'size':25}},
+    #                 hoverinfo='lon+lat+text',                                   # Examples: "lon", "lat", "lon+lat", "lon+lat+text", "all", 'none', 'skip'
+    #                 hovertext=distinctDf['Hotel_Name'],
+    #                 # customdata=df_sub['website']
+    # )]
 
-    # locations[0].update_traces(marker_colorbar_outlinecolor='black',marker_colorbar_outlinewidth=2)    
-    figure = {
-            'data': locations,
-            'layout': go.Layout(
-                uirevision= 'foo', #preserves state of figure/map after callback activated
-                clickmode= 'event+select',
-                hovermode='closest',
-                hoverdistance=2,
-                title=dict(text="Where to Recycle My Stuff?",font=dict(size=50, color='green')),
-                mapbox=dict(
-                    accesstoken=os.environ.get('MAPBOX_TOKEN'),
-                    bearing=50,
-                    style='light',  # other option might be 'dark'
-                    center=dict(
-                        lat=latZoom,
-                        lon=-lngZoom
-                    ),
-                    # pitch=40,     # This make the map little bit tilted
-                    zoom=6
-                ),
-            )
-        }
+    # # locations[0].update_traces(marker_colorbar_outlinecolor='black',marker_colorbar_outlinewidth=2)    
+    # figure = {
+    #         'data': locations,
+    #         'layout': go.Layout(
+    #             uirevision= 'foo', #preserves state of figure/map after callback activated
+    #             clickmode= 'event+select',
+    #             hovermode='closest',
+    #             hoverdistance=2,
+    #             title=dict(text="Where to Recycle My Stuff?",font=dict(size=50, color='green')),
+    #             mapbox=dict(
+    #                 accesstoken=os.environ.get('MAPBOX_TOKEN'),
+    #                 bearing=50,
+    #                 style='light',  # other option might be 'dark'
+    #                 center=dict(
+    #                     lat=latZoom,
+    #                     lon=-lngZoom
+    #                 ),
+    #                 # pitch=40,     # This make the map little bit tilted
+    #                 zoom=6
+    #             ),
+    #         )
+    #     }
 
-    return figure
-
-
+    # return figure
 
 
-    # fig = px.scatter_mapbox(
-    #                         distinctDf,
-    #                         lat='lat', 
-    #                         lon='lng',     
-    #                         # color="peak_hour", 
-    #                         # size="car_hours",
-    #                         color_continuous_scale=px.colors.cyclical.IceFire, 
-    #                         size_max=15, 
-    #                         zoom=15,
-    #                         hover_name = 'Hotel_Name',
-    #                         width=1600,
-    #                         height=800,
-    #                         center={'lat':latZoom,'lon':lngZoom})
-    # return fig
+
+
+    fig = px.scatter_mapbox(
+                            distinctDf,
+                            lat='lat', 
+                            lon='lng',     
+                            # color="peak_hour", 
+                            # size="car_hours",
+                            color_continuous_scale=px.colors.cyclical.IceFire, 
+                            size_max=15, 
+                            zoom=15,
+                            hover_name = 'Hotel_Name',
+                            width=1600,
+                            height=800,
+                            center={'lat':latZoom,'lon':lngZoom})
+    return fig
 
 #---------------------------------------------------------------
-# callback for Web_link
-@app.callback(
-    Output('hotel_info', 'children'),
-    [Input('graph', 'clickData')])
-def display_click_data(clickData):
-    if clickData is None:
-        return 'Click on any bubble'
-    else:
-        print (clickData)
-        the_link=clickData
-        if the_link is None:
-            return 'No Data'
-        else:
-            # return html.A(clickData, href=clickData, target="_blank")
-            return the_link['points'][0]['hovertext']
-# #--------------------------------------------------------------
+# # callback for Web_link
+# @app.callback(
+#     Output('hotel_info', 'children'),
+#     [Input('graph', 'clickData')])
+# def display_click_data(clickData):
+#     if clickData is None:
+#         return 'Click on any bubble'
+#     else:
+#         print (clickData)
+#         the_link=clickData
+#         if the_link is None:
+#             return 'No Data'
+#         else:
+#             # return html.A(clickData, href=clickData, target="_blank")
+#             return the_link['points'][0]['hovertext']
+# # #--------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run_server(debug=True)
