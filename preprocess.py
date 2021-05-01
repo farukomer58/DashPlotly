@@ -16,6 +16,8 @@ hotel['latLong'] = hotel.apply (lambda row: utils.label_lat(row), axis=1)
 hotel.to_csv('Hotel.csv',index=False)
 
 updatedDataset = pd.read_csv('Hotel.csv')
+updatedDataset.dtypes
+updatedDataset.head()
 
 distinctDf = hotel
 

@@ -35,7 +35,44 @@ app.layout = html.Div([
                     # multi=True,
                     className='text-dark'
                 ),
-                html.Div(id='hotel_info')
+
+                html.Hr(),
+                # Inputs for the range
+                dcc.Input(
+                    id="input_range_min", type="number", placeholder="Min",
+                    min=1, max=10, step=1,value=1
+                ),
+                dcc.Input(
+                    id="input_range_max", type="number", placeholder="Max",
+                    min=1, max=10, step=1,value=10
+                ),
+
+                # Slider here for the range of avergae feedback
+                dcc.RangeSlider(
+                    id='my-range-slider',
+                    min=1,
+                    max=10,
+                    step=0.5,
+                    value=[1, 10],
+                    allowCross=False,      # True,False - Manage handle crossover
+                    persistence= True,     # persisted value when the component - or the page - is refreshed.      
+                    className='m-2'
+                ),
+                html.Hr(),
+                # Slider here for the range of additional scorign
+                dcc.RangeSlider(
+                    id='my-range-additional',
+                    min=1,
+                    max=df['Additional_Number_of_Scoring'].max(),
+                    step=1,
+                    value=[1, df['Additional_Number_of_Scoring'].max()],
+                    allowCross=False,      # True,False - Manage handle crossover
+                    className='m-2'
+                ),
+
+                html.Div(id='hotel_info'),
+                html.Div(id='output-slider'),
+                html.Div(id='output-random')
         ], className='col-md-2 m-2'),
 
         # Map
@@ -150,6 +187,31 @@ def display_click_data(clickData):
             print(selectedHotelInfo.head(4))
             return selectedHotelInfo.Hotel_Name.unique()
 # #--------------------------------------------------------------
+
+# Callback for the slider Additional Scoring
+@app.callback(dash.dependencies.Output('my-range-additional', 'marks'),
+              [Input('my-range-additional', 'drag_value')])
+def drag(value):
+    end = {}
+    for item in value:
+        end[str(item)] = str(item)
+    return end
+
+# Callback for the slider Average scoring
+@app.callback(
+    dash.dependencies.Output('output-slider', 'children'),
+    [dash.dependencies.Input('my-range-slider', 'value')])
+def update_output(value):
+    return 'You have selected "{}"'.format(value)
+
+# Callback for the input that loads the slider
+@app.callback(
+    Output("my-range-slider", "value"),
+    Input("input_range_min", "value"),
+    Input("input_range_max", "value"),
+)
+def number_render(min, max):
+    return [min,max]
 
 if __name__ == '__main__':
     app.run_server(debug=True)
